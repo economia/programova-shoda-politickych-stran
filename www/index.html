@@ -15,9 +15,41 @@ html, body {
         text-align: right;
 }
 
+.hover {
+	opacity: 0.7
+}
+
+div.tooltip {   
+  position: absolute;           
+  text-align: left;           
+  width: 553px;                  
+  height: 553px;                 
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: white;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;
+  left: 55px;
+  top: 55px;      
+}
+
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<div class="overlay" id="overlay" style="display:none;"></div>
+ 
+<div class="box" id="box">
+ <a class="boxclose" id="boxclose"></a>
+ <h1>Important message</h1>
+ <p>
+  Here comes a very important message for your user.
+  Turn this window off by clicking the cross.
+ </p>
+</div>
+
 <script>
 
 var padding = 100
@@ -35,7 +67,7 @@ var colorScale = d3.scale.linear()
 
 var strany = ["ANO", "Úsvit", "TOP 09", "Zelení", "SSČR", "SSO", "SPOZ", "Cibulka", "Piráti", "Občané", "ODS", "LEV 21", "KSČM", "Koruna", "KDU-ČSL", "KAN", "Změna", "Hlavu v.", "DSSS", "ČSSD"]
 
-var celeStrany = ["ANO", "Úsvit přímé demokracie", "TOP 09", "Strana zelených", "Strana soukromníků ČR", "SSO", "SPOZ", "Pravý blok Petra Cibulky", "Piráti", "Občané 2011", "ODS", "LEV 21", "KSČM", "Koruna česká", "KDU-ČSL", "KAN", "Hnutí změna", "Hlavu vzhůru", "DSSS", "ČSSD"]
+var celeStrany = ["ANO", "Úsvit přímé demokracie", "TOP 09", "Strana zelených", "Strana soukromníků ČR", "Strana svobodných občanů", "SPOZ", "Pravý blok Petra Cibulky", "Pirátská strana", "Občané 2011", "ODS", "LEV 21", "KSČM", "Koruna česká", "KDU-ČSL", "Klub angažovaných nestraníků", "Hnutí změna", "Hlavu vzhůru", "DSSS", "ČSSD"]
 
 var scale = d3.scale.ordinal()
 			.domain(strany)
@@ -48,6 +80,10 @@ var xAxis = d3.svg.axis()
 var yAxis = d3.svg.axis()
 		.scale(scale)
 		.orient("right")
+
+var div = d3.select("body").append("div")
+				.attr("class", "tooltip")
+				.style("opacity", 0)
 
 
 var dataset = [-1, 44.5, 43.5, 43.25, 39.25, 25, 43.5, 39.25, 40, 43.25, 35.5, 31.5, 36.75, 43.25, 44.5, 39.75, 40.75, 29.75, 33.5, 35.75,
@@ -71,32 +107,11 @@ var dataset = [-1, 44.5, 43.5, 43.25, 39.25, 25, 43.5, 39.25, 40, 43.25, 35.5, 3
 33.5, 34.5, 29.5, 39.25, 37.25, 23.75, 38.5, 42.25, 38, 44.25, 23.25, 30.5, 36.75, 31.25, 29.5, 26.25, 33.75, 28.25, -1, 35.25,
 35.75, 30.5, 34.75, 41.5, 26.5, 19.5, 43.75, 37.5, 37.25, 40.5, 23.5, 33.75, 38.5, 32.5, 36.25, 31, 36, 25, 35.25, -1];
 
-
-svg.selectAll("rect")
-	.data(dataset)
-	.enter()
-	.append("rect")
-	.attr("x", function(d, i) {
-		return (i % 20) * (width - padding)/20 + padding/2
-	})
-	.attr("y", function(d, i) {
-		return Math.floor(i / 20) * (height - padding)/20 + padding/2
-	})
-	.attr("height", 25)
-	.attr("width", 25)
-	.attr("fill", function(d) {
-		if (d == -1) {
-			return "lightgray";
-		} else {
-			return colorScale(d);
-		}
-	});
-
 svg.append("g")
 	.attr("class", "axis")
 	.attr("transform", "translate(" + padding/2 + ", 20)")
 	.call(xAxis)
-svg.selectAll("g text")
+svg.selectAll("g.axis text")
 	.attr("transform", "rotate(-90)")
 
 svg.append("g")
@@ -104,25 +119,69 @@ svg.append("g")
 	.attr("transform", "translate(" + (padding/2 - 57) + ", 61)")
 	.call(yAxis)
 
-svg.selectAll("values")
+var values = svg.selectAll("g.value")
 	.data(dataset)
 	.enter()
-	.append("text")
-	.attr("text-anchor", "middle")
-	.text(function (d, i) {
-		if (d == -1) {
-			return "";
-		} else {
-			return Math.round(d / 0.64); //max. bodů je 64
-		}
+	.append("g")
+	.attr("class", "value")
+	.on("mouseover", function (d, i) {
+		icko = i
+		svg.selectAll("rect")
+			.filter(function (d, i) { 
+				return ((i % 20) == (icko % 20) || Math.floor(i / 20) == Math.floor(icko / 20) ) 
+			})
+			.attr("class", "hover")
 	})
-	.attr("x", function(d, i) {
-		return (i % 20) * (width - padding)/20 + padding/2 + 13
+	.on("mouseout", function (d, i) {
+		icko = i
+		svg.selectAll("rect")
+			.filter(function (d, i) { 
+				return ((i % 20) == (icko % 20) || Math.floor(i / 20) == Math.floor(icko / 20) ) 
+			})
+			.attr("class", "")
 	})
-	.attr("y", function(d, i) {
-		return Math.floor(i / 20) * (height - padding)/20 + padding/2 + 15
-	})
-	.attr("font-family", "sans-serif")
-    .attr("font-size", "9px")
-    .attr("fill", "white");
+	.on("click", function(d, i) {
+		//div.transition()
+		//	.duration(200)
+		//	.style("opacity", .9)
+		//div .html(celeStrany[i % 20] + " vs " + celeStrany[Math.floor(i / 20)] + "<br>" + otazky);
+	});
+	
+	values.append("rect")
+		.attr("x", function(d, i) {
+			return (i % 20) * (width - padding)/20 + padding/2
+		})
+		.attr("y", function(d, i) {
+			return Math.floor(i / 20) * (height - padding)/20 + padding/2
+		})
+		.attr("height", 25)
+		.attr("width", 25)
+		.attr("fill", function(d) {
+			if (d == -1) {
+				return "lightgray";
+			} else {
+				return colorScale(d);
+			}
+	});
+	
+	values.append("text")
+		.attr("text-anchor", "middle")
+		.text(function (d, i) {
+			if (d == -1) {
+				return "";
+			} else {
+				return Math.round(d / 0.64); //max. bodů je 64
+			}
+		})
+		.attr("x", function(d, i) {
+			return (i % 20) * (width - padding)/20 + padding/2 + 13
+		})
+		.attr("y", function(d, i) {
+			return Math.floor(i / 20) * (height - padding)/20 + padding/2 + 15
+		})
+		.attr("font-family", "sans-serif")
+    	.attr("font-size", "9px")
+    	.attr("fill", "white");
+
+
 </script>
