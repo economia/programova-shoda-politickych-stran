@@ -35,13 +35,16 @@ div.tooltip {
   pointer-events: none;
   left: 88px;
   top: 88px;
+  border-radius: 6px;
        
 }
 
 #tabl {
-	overflow: scroll;
+	overflow-y: scroll;
+	overflow-x: hodden;
 	height: 420px;
-	width: 460px;
+	padding: 15 px;
+	width: 470px;
 }
 
 .ano {
@@ -219,7 +222,7 @@ var values = svg.selectAll("g.value")
 			.attr("class", "")		
 	})
 	.on("click", function(d, i) {
-		var tabulka = "<table><col width=\"300\"><col width=\"60\"><col width=\"60\"><tr><td><img src=\"./close.png\"></td><td>" + celeStrany[i % 20] + "</td><td>" + celeStrany[Math.floor(i / 20)] + "</td></tr></table><div id = \"tabl\"><table id = \"tabulka\"><col width=\"300\"><col width=\"60\"><col width=\"60\">"
+		var tabulka = "<table><col width=\"300\"><col width=\"70\"><col width=\"70\"><tr><td><img src=\"./close.png\"></td><td>" + celeStrany[i % 20] + "</td><td>" + celeStrany[Math.floor(i / 20)] + "</td></tr></table><div id = \"tabl\"><table id = \"tabulka\"><col width=\"300\"><col width=\"70\"><col width=\"70\">"
 		if (d != -1) {
 			if (overlayOpen == 0) {
 				overlayOpen = 1
