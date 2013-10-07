@@ -58,8 +58,7 @@ div.tooltip {
 .otazka {
 	background-color: #E0E0E0;
 }
-.hoverBold,
-.XhoverBold {
+.hoverBold {
 	font-weight: bold;
 }
 
@@ -152,17 +151,16 @@ var odpovedi = [
 var overlayOpen = 0
 
 var xaxisContent = svg.append("g")
-	.attr("class", "xaxis")
-	.attr("transform", "translate(" + padding/2 + ", 20)")
-	.call(xAxis)
-svg.selectAll("g.xaxis text")
-	.attr("transform", "rotate(-90)")
+		.attr("class", "xaxis")
+		.attr("transform", "translate(" + padding/2 + ", 20)")
+		.call(xAxis)
+	svg.selectAll("g.xaxis text")
+		.attr("transform", "rotate(-90)")
 
 var yaxisContent = svg.append("g")
-	.attr("class", "yaxis")
-	.attr("transform", "translate(" + (padding/2 - 57) + ", 61)")
-	.call(yAxis)
-svg.selectAll("g.yaxis text")
+		.attr("class", "yaxis")
+		.attr("transform", "translate(" + (padding/2 - 57) + ", 61)")
+		.call(yAxis)
 
 function opovedText(odpoved) {
 	if (odpoved == 1) {
@@ -187,19 +185,17 @@ var values = svg.selectAll("g.value")
 			})
 			.attr("class", "hover")
 		
-		xaxisContent
-		.selectAll("text")
+		xaxisContent.selectAll("text")
 			.filter(function(d, i) {
 				return ((i % 20) == (icko % 20))
 			})
 			.attr("class", "hoverBold")
 
-		yaxisContent
-		.selectAll("text")
+		yaxisContent.selectAll("text")
 			.filter(function(d, i) {
-				return (-1 * Math.floor(i / 20) == Math.floor(icko / 20) )
+				return (i == Math.floor(icko / 20))
 			})
-			.attr("class", "XhoverBold")		
+			.attr("class", "hoverBold")		
 
 
 	})
@@ -207,21 +203,18 @@ var values = svg.selectAll("g.value")
 		icko = i
 		svg.selectAll("rect")
 			.filter(function (d, i) {
-				console.log(i)
 				return ((i % 20) == (icko % 20) || Math.floor(i / 20) == Math.floor(icko / 20) ) 
 			})
 			.attr("class", "")
-		xaxisContent
-		.selectAll("text")
+		xaxisContent.selectAll("text")
 			.filter(function(d, i) {
 				return ((i % 20) == (icko % 20))
 			})
 			.attr("class", "")		
 
-		yaxisContent
-		.selectAll("text")
+		yaxisContent.selectAll("text")
 			.filter(function(d, i) {
-				return (Math.floor(i / 20) == Math.floor(icko / 20) )
+				return (i == Math.floor(icko / 20))
 			})
 			.attr("class", "")		
 	})
