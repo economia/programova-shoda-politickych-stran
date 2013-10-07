@@ -32,20 +32,22 @@ div.tooltip {
   font: 12px sans-serif;        
   background: white;   
   border: 0px;      
-  pointer-events: none;
+  display: none;
   left: 88px;
   top: 88px;
   border-radius: 6px;
+	z-index: 50000;
+
        
 }
 
 #tabl {
+	position:absolute;
 	overflow-y: scroll;
-	overflow-x: hodden;
+	overflow-x: hidden;
 	height: 420px;
 	padding: 15 px;
-	width: 470px;
-}
+	width: 470px;}
 
 .ano {
 	background-color: #A6D96A;
@@ -175,6 +177,14 @@ function opovedText(odpoved) {
 	}
 }
 
+function overlayClose() {
+	overlayOpen = 0
+	div.transition()
+		.duration(200)
+		.style("opacity", 0)
+		.style("display", "none")	
+};
+
 var values = svg.selectAll("g.value")
 	.data(dataset)
 	.enter()
@@ -222,7 +232,7 @@ var values = svg.selectAll("g.value")
 			.attr("class", "")		
 	})
 	.on("click", function(d, i) {
-		var tabulka = "<table><col width=\"300\"><col width=\"70\"><col width=\"70\"><tr><td><img src=\"./close.png\"></td><td>" + celeStrany[i % 20] + "</td><td>" + celeStrany[Math.floor(i / 20)] + "</td></tr></table><div id = \"tabl\"><table id = \"tabulka\"><col width=\"300\"><col width=\"70\"><col width=\"70\">"
+		var tabulka = "<table><col width=\"300\"><col width=\"70\"><col width=\"70\"><tr><td><a href=\"#\" onclick=\"overlayClose();\"><img src=\"./close.png\"></a></td><td>" + celeStrany[i % 20] + "</td><td>" + celeStrany[Math.floor(i / 20)] + "</td></tr></table><div id = \"tabl\"><table id = \"tabulka\"><col width=\"300\"><col width=\"70\"><col width=\"70\">"
 		if (d != -1) {
 			if (overlayOpen == 0) {
 				overlayOpen = 1
@@ -230,34 +240,22 @@ var values = svg.selectAll("g.value")
 				.transition()
 					.duration(200)
 					.style("opacity", 1)
-				
 				for (var q = 0; q < otazky.length; q++) {
 					tabulka = tabulka + "<tr><td class=\"otazka\">" + otazky[q] + "</td>" + opovedText(odpovedi[i % 20][q]) + opovedText(odpovedi[Math.floor(i / 20)][q]) + "</tr>"
 				}
 				tabulka = tabulka + "</table></div>"
-				div .html(tabulka);		
+				div .html(tabulka)
+				document.getElementById("tabl").focus()
 			} else {
-				overlayOpen = 0
-				div.transition()
-					.duration(200)
-					.style("opacity", 0)
-					.style("display", "none")		
+				overlayClose();	
 			}			
 		} else {
-			overlayOpen = 0
-			div.transition()
-				.duration(200)
-				.style("opacity", 0)
-				.style("display", "none")			
+			overlayClose();			
 		}		
 	});
 	$(document).keyup(function(e) {
   		if (e.keyCode == 27) { 
-  			overlayOpen = 0
-			div.transition()
-				.duration(200)
-				.style("opacity", 0)
-				.style("display", "none")
+  			overlayClose();
   		 }
 	});
 	
