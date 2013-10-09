@@ -11,7 +11,7 @@ var colorScale = d3.scale.linear()
 		.domain([4, 30, 45,  55])
 		.range(["#D7191C", "#FDAE61", "#A6D96A", "#008837"])
 
-var strany = ["ANO", "Úsvit", "TOP 09", "Zelení", "SSČR", "SSO", "SPOZ", "Cibulka", "Piráti", "Občané", "ODS", "LEV 21", "KSČM", "Koruna", "KDU-ČSL", "KAN", "Změna", "Hlavu v.", "DSSS", "ČSSD"]
+var strany = ["ANO", "Úsvit", "TOP 09", "Zelení", "SSČR", "Svobodní", "SPOZ", "Cibulka", "Piráti", "Občané", "ODS", "LEV 21", "KSČM", "Koruna", "KDU-ČSL", "KAN", "Změna", "Hlavu v.", "DSSS", "ČSSD"]
 
 var celeStrany = ["ANO", "Úsvit přímé demokracie", "TOP 09", "Strana zelených", "Strana soukromníků ČR", "Strana svobodných občanů", "SPOZ", "Pravý blok Petra Cibulky", "Pirátská strana", "Občané 2011", "ODS", "LEV 21", "KSČM", "Koruna česká", "KDU-ČSL", "Klub angažovaných nestraníků", "Hnutí změna", "Hlavu vzhůru", "DSSS", "ČSSD"]
 
@@ -81,7 +81,7 @@ var overlayOpen = 0
 
 var xaxisContent = svg.append("g")
 		.attr("class", "xaxis")
-		.attr("transform", "translate(" + padding/2 + ", 20)")
+		.attr("transform", "translate(" + padding/2 + ", 26)")
 		.call(xAxis)
 	svg.selectAll("g.xaxis text")
 		.attr("transform", "rotate(-90)")
